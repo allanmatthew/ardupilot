@@ -8,6 +8,8 @@
 #include "GPIO_BBB.h"
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO
 #include "GPIO_RPI.h"
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+#include "GPIO_IMX6.h"
 #endif
 
 class Linux::LinuxDigitalSource : public AP_HAL::DigitalSource {

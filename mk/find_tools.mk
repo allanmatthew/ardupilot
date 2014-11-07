@@ -64,6 +64,15 @@ BBONE_LD      :=  arm-linux-gnueabihf-g++-4.7
 BBONE_GDB     :=  gdb
 BBONE_OBJCOPY :=  objcopy
 
+# toolchains for i.mx6
+IMX6_CXX     :=  arm-linux-gnueabihf-g++-4.7
+IMX6_CC      :=  arm-linux-gnueabihf-gcc-4.7
+IMX6_AS      :=  arm-linux-gnueabihf-gcc-4.7
+IMX6_AR      :=  ar
+IMX6_LD      :=  arm-linux-gnueabihf-g++-4.7
+IMX6_GDB     :=  gdb
+IMX6_OBJCOPY :=  objcopy
+
 # toolchains for Raspberry Pi
 RPI_CXX     :=  arm-linux-gnueabihf-g++
 RPI_CC      :=  arm-linux-gnueabihf-gcc

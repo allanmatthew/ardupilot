@@ -36,6 +36,14 @@ LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[LINUX_SPI_DEVICE_NUM_DEVICES
     /* MPU9250 is restricted to 1MHz for non-data and interrupt registers */
     LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MPU9250, SPI_MODE_3, 8, RPI_GPIO_7,  1*MHZ, 16*MHZ),
 };
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[LINUX_SPI_DEVICE_NUM_DEVICES] = {
+//Lsm303d
+//L3gd20
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MS5611,     SPI_MODE_3, 8, IMX6_GPIO(4,24),  10*MHZ,10*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MPU6000,    SPI_MODE_3, 8, IMX6_GPIO(4,26),  500*1000, 20*MHZ),
+};
+
 #else
 // empty device table
 LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[0];
@@ -119,8 +127,12 @@ void LinuxSPIDeviceManager::init(void *)
             hal.scheduler->panic("SPIDriver: invalid bus number");
         }
         if (_fd[_device[i]._bus] == -1) {
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+            char path[] = "/dev/spidev32766.0";
+#else
             char path[] = "/dev/spidevN.0";
             path[11] = '0' + _device[i]._bus;
+#endif
             _fd[_device[i]._bus] = open(path, O_RDWR);            
             if (_fd[_device[i]._bus] == -1) {
                 hal.scheduler->panic("SPIDriver: unable to open SPI bus");
