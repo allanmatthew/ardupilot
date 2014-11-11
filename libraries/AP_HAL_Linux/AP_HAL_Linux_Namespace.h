@@ -17,7 +17,8 @@ namespace Linux {
     class LinuxStorage;
     class LinuxGPIO_BBB;
     class LinuxGPIO_RPI;
-    class LinuxGPIO_IMX6;
+    class LinuxStorage;
+    class LinuxStorage_FRAM;
     class LinuxDigitalSource;
     class LinuxRCInput;
     class LinuxRCInput_PRU;
