@@ -26,11 +26,16 @@ static struct {
     uint8_t whoami_reg;
 } whoami_list[] = {
     { "MS5611",     AP_HAL::SPIDevice_MS5611,     0x00 | 0x80 },
-    { "MPU9250",    AP_HAL::SPIDevice_MPU9250,    0x75 | 0x80 },
     { "MPU6000",    AP_HAL::SPIDevice_MPU6000,    0x75 | 0x80 },
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_PXF || CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ERLE
+    { "MPU9250",    AP_HAL::SPIDevice_MPU9250,    0x75 | 0x80 },
     { "FRAM",       AP_HAL::SPIDevice_Dataflash,  0x00 | 0x80 },
     { "LSM9DS0_AM", AP_HAL::SPIDevice_LSM9DS0_AM, 0x0F | 0x80 },
     { "LSM9DS0_G",  AP_HAL::SPIDevice_LSM9DS0_G,  0x0F | 0x80 },
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+    { "L3GD20",     AP_HAL::SPIDevice_L3GD20,     0x0F | 0x80 },
+    { "LSM303D",    AP_HAL::SPIDevice_LSM303D,    0x0F | 0x80 },
+#endif
 };
 
 void loop(void)
