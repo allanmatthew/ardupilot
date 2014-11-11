@@ -20,11 +20,6 @@
 #define GPIO_DR    0x000  //Data register
 #define GPIO_DIR   0x004  //Direction register
 
-#define LED_AMBER       2   //USER_LED
-#define LED_BLUE        19
-#define LED_SAFETY      21  
-#define SAFETY_SWITCH   101 //USER_BUTTON
-
 #define LOW             0
 #define HIGH            1
 

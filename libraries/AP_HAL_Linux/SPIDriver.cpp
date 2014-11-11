@@ -38,12 +38,11 @@ LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[LINUX_SPI_DEVICE_NUM_DEVICES
 };
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
 LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[LINUX_SPI_DEVICE_NUM_DEVICES] = {
-//Lsm303d
-//L3gd20
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MS5611,     SPI_MODE_3, 8, IMX6_GPIO(4,24),  10*MHZ,10*MHZ),
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MPU6000,    SPI_MODE_3, 8, IMX6_GPIO(4,26),  500*1000, 20*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_L3GD20,     SPI_MODE_3, 8, IMX6_GPIO(6,16),  1*MHZ, 1*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_LSM303D,    SPI_MODE_3, 8, IMX6_GPIO(6,9),  1*MHZ, 1*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MS5611,     SPI_MODE_3, 8, IMX6_GPIO(4,26),  1*MHZ, 1*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MPU6000,    SPI_MODE_3, 8, IMX6_GPIO(4,24),  500*1000, 20*MHZ),
 };
-
 #else
 // empty device table
 LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[0];
@@ -74,6 +73,7 @@ void LinuxSPIDeviceDriver::init()
     }
     _cs->mode(HAL_GPIO_OUTPUT);
     _cs->write(1);       // do not hold the SPI bus initially
+    fflush(stdout);
 }
 
 AP_HAL::Semaphore* LinuxSPIDeviceDriver::get_semaphore()
@@ -129,6 +129,7 @@ void LinuxSPIDeviceManager::init(void *)
         if (_fd[_device[i]._bus] == -1) {
 #if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
             char path[] = "/dev/spidev32766.0";
+            path[17] = '0' + _device[i]._bus;
 #else
             char path[] = "/dev/spidevN.0";
             path[11] = '0' + _device[i]._bus;
@@ -137,8 +138,6 @@ void LinuxSPIDeviceManager::init(void *)
             if (_fd[_device[i]._bus] == -1) {
                 hal.scheduler->panic("SPIDriver: unable to open SPI bus");
             }
-            printf("Opened %s\n", path);
-            fflush(stdout);
         }
         _device[i].init();
     }
