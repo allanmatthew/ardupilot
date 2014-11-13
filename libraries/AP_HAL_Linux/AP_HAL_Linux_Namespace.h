@@ -24,6 +24,7 @@ namespace Linux {
     class LinuxRCInput;
     class LinuxRCInput_PRU;
     class LinuxRCInput_Navio;
+    class LinuxRCInput_UDP;
     class LinuxRCOutput_PRU;
     class LinuxRCOutput_Navio;
     class LinuxSemaphore;

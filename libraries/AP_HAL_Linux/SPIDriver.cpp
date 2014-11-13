@@ -38,16 +38,12 @@ LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[LINUX_SPI_DEVICE_NUM_DEVICES
 };
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
 LinuxSPIDeviceDriver LinuxSPIDeviceManager::_device[LINUX_SPI_DEVICE_NUM_DEVICES] = {
-/*
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_L3GD20,     SPI_MODE_3, 8, IMX6_GPIO(6,16),  1*MHZ, 1*MHZ),
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_LSM303D,    SPI_MODE_3, 8, IMX6_GPIO(6,9),   1*MHZ, 1*MHZ),
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MS5611,     SPI_MODE_3, 8, IMX6_GPIO(4,26),  1*MHZ, 1*MHZ),
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MPU6000,    SPI_MODE_3, 8, IMX6_GPIO(4,24),  500*1000, 1*MHZ),
-*/
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_L3GD20,     SPI_MODE_3, 8, IMX6_GPIO(6,16),  100*1000, 100*1000),
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_LSM303D,    SPI_MODE_3, 8, IMX6_GPIO(6,9),   100*1000, 100*1000),
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MS5611,     SPI_MODE_3, 8, IMX6_GPIO(4,26),  100*1000, 100*1000),
-    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MPU6000,    SPI_MODE_3, 8, IMX6_GPIO(4,24),  100*1000, 100*1000),
+
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_L3GD20,     SPI_MODE_3, 8, IMX6_GPIO(6,16), 10*MHZ, 10*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_LSM303D,    SPI_MODE_3, 8, IMX6_GPIO(6,9),  10*MHZ, 10*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MS5611,     SPI_MODE_3, 8, IMX6_GPIO(4,26),  10*MHZ, 10*MHZ),
+    LinuxSPIDeviceDriver(0, AP_HAL::SPIDevice_MPU6000,    SPI_MODE_3, 8, IMX6_GPIO(4,24),  500*1000, 20*MHZ),
+
 };
 #else
 // empty device table

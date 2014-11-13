@@ -20,7 +20,11 @@ static LinuxUARTDriver uartBDriver(false);
 static LinuxUARTDriver uartCDriver(false);
 
 static LinuxSemaphore  i2cSemaphore;
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+static LinuxI2CDriver  i2cDriver(&i2cSemaphore, "/dev/i2c-0");
+#else
 static LinuxI2CDriver  i2cDriver(&i2cSemaphore, "/dev/i2c-1");
+#endif
 static LinuxSPIDeviceManager spiDeviceManager;
 static LinuxAnalogIn analogIn;
 
@@ -57,8 +61,8 @@ static LinuxRCInput_PRU rcinDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO
 static LinuxRCInput_Navio rcinDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
-//static LinuxRCInput_IMX6 rcinDriver; //until we write one...
-static LinuxRCInput rcinDriver;
+static LinuxRCInput_UDP rcinDriver;
+//static LinuxRCInput rcinDriver;
 #else
 static LinuxRCInput rcinDriver;
 #endif

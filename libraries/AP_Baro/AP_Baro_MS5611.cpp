@@ -102,10 +102,7 @@ uint16_t AP_Baro_MS5611_SPI::read_16bits(uint8_t reg)
     uint8_t tx[3];
     uint8_t rx[3];
     tx[0] = reg; tx[1] = 0; tx[2] = 0;
-    printf("MS5611 transmitting: [0x%02X,0x%02X,0x%02X]",tx[0],tx[1],tx[2]);
     _spi->transaction(tx, rx, 3);
-    printf("MS5611 received bytes: [0x%02X,0x%02X,0x%02X]\n",rx[0],rx[1],rx[2]);
-    fflush(stdout);
     return ((uint16_t) rx[1] << 8 ) | ( rx[2] );
 }
 
@@ -115,8 +112,6 @@ uint32_t AP_Baro_MS5611_SPI::read_adc()
     uint8_t rx[4];
     memset(tx, 0, 4); /* first byte is addr = 0 */
     _spi->transaction(tx, rx, 4);
-    printf("MS5611 received bytes: [0x%02X,0x%02X,0x%02X,0x%02X]\n",rx[0],rx[1],rx[2],rx[3]);
-    fflush(stdout);
     return (((uint32_t)rx[1])<<16) | (((uint32_t)rx[2])<<8) | ((uint32_t)rx[3]);
 }
 
@@ -125,8 +120,6 @@ void AP_Baro_MS5611_SPI::write(uint8_t reg)
 {
     uint8_t tx[1];
     tx[0] = reg;
-    printf("MS5611 transmitting: [0x%02X]\n",tx[0]);
-    fflush(stdout);
     _spi->transaction(tx, NULL, 1);
 }
 
@@ -287,7 +280,8 @@ bool AP_Baro_MS5611::check_crc(void)
     n_rem = (0x000F & (n_rem >> 12));
     n_prom[7] = crc_read;
 
-    printf("CRC read: 0x%02X, n_rem: 0x%02X\n",crc_read,n_rem);
+    printf("MS5611: read CRC: 0x%04X, calculated CRC: 0x%04X\n",crc_read,n_rem);
+    fflush(stdout);
 
     /* return true if CRCs match */
     return (0x000F & crc_read) == (n_rem ^ 0x00);
@@ -322,6 +316,7 @@ bool AP_Baro_MS5611::init()
     C6 = _serial->read_16bits(CMD_MS5611_PROM_C6);
 
     // if not on APM2 then check CRC
+
 #if HAL_CPU_CLASS >= HAL_CPU_CLASS_75
     if (!check_crc()) {
         hal.scheduler->panic("Bad CRC on MS5611");
