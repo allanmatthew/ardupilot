@@ -294,7 +294,11 @@ void *LinuxScheduler::_rcin_thread(void)
         poll(NULL, 0, 1);        
     }
     while (true) {
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+	_microsleep(20000); //We get new RC data every 20ms
+#else
         _microsleep(10000);
+#endif
 
         ((LinuxRCInput *)hal.rcin)->_timer_tick();
     }

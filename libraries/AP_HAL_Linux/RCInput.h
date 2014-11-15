@@ -25,6 +25,7 @@ public:
 
  protected:
     void _process_rc_pulse(uint16_t width_s0, uint16_t width_s1);
+    void _process_digital_values(uint16_t *channel_vals, uint8_t num_channels);
 
  private:
     volatile bool new_rc_input;

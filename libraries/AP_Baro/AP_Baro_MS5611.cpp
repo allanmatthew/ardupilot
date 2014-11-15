@@ -44,7 +44,6 @@
 
 #include <AP_HAL.h>
 #include "AP_Baro_MS5611.h"
-#include <stdio.h>
 
 extern const AP_HAL::HAL& hal;
 
@@ -279,9 +278,6 @@ bool AP_Baro_MS5611::check_crc(void)
     /* final 4 bit remainder is CRC value */
     n_rem = (0x000F & (n_rem >> 12));
     n_prom[7] = crc_read;
-
-    printf("MS5611: read CRC: 0x%04X, calculated CRC: 0x%04X\n",crc_read,n_rem);
-    fflush(stdout);
 
     /* return true if CRCs match */
     return (0x000F & crc_read) == (n_rem ^ 0x00);

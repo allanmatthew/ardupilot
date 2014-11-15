@@ -20,7 +20,7 @@
 
 #include "RCInput.h"
 
-#define PORT 1153
+#define PORT 5005
 #define BUFSIZE 2048
 
 extern const AP_HAL::HAL& hal;
@@ -59,16 +59,40 @@ void LinuxRCInput_UDP::_timer_tick()
 {
         int recvlen;                    /* # bytes received */
         unsigned char buf[BUFSIZE];     /* receive buffer */
+        long long unsigned timestamp;
+	uint16_t sequence;
+	uint16_t channelVals[8];
         
-        printf("waiting on port %d\n", PORT);
         recvlen = recvfrom(_fd, buf, BUFSIZE, 0, 0, 0);
-        printf("received %d bytes\n", recvlen);
 
-        if (recvlen > 0) {
-                buf[recvlen] = 0;
-                printf("received message: \"%s\"\n", buf);
+        if (recvlen == 26) {
+		memcpy(&timestamp, buf, 8);
+		memcpy(&sequence, &buf[8], 2);
+
+		//Reorder the channels a bit.
+		//1 -> 3
+		//2 -> 1
+		//3 -> 2
+		//4 -> 4
+		memcpy(channelVals, &buf[12], 2); //2->1
+		memcpy(&channelVals[1], &buf[14], 2); //3->2
+		memcpy(&channelVals[2], &buf[10], 2); //1->3
+		memcpy(&channelVals[3], &buf[16], 2); //4->4
+		//Copy the rest
+		memcpy(&channelVals[4], &buf[18], 8);
+
+		//printf("[");
+		//for(int i=0; i<8; ++i)
+		//	printf("%i,", channelVals[i]);
+		//printf("]\n");
+
+		_process_digital_values(channelVals, 8);
+
         }
-        /* never exits */
+	else if (recvlen > 0) {
+		printf("Got wrong number of bytes from RC: %i\n",recvlen);
+	}
+	
 }
 
 #endif // CONFIG_HAL_BOARD_SUBTYPE

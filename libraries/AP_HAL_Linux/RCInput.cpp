@@ -337,4 +337,11 @@ void LinuxRCInput::_process_rc_pulse(uint16_t width_s0, uint16_t width_s1)
     _process_dsm_pulse(width_s0, width_s1);
 }
 
+//Process digital (UDP) values
+void LinuxRCInput::_process_digital_values(uint16_t *channel_vals, uint8_t num_channels)
+{
+	_num_channels = num_channels;
+	memcpy(_pwm_values, channel_vals, num_channels*2);
+}
+
 #endif // CONFIG_HAL_BOARD
