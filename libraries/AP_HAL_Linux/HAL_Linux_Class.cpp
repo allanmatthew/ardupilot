@@ -78,8 +78,8 @@ static LinuxRCOutput_PRU rcoutDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO
 static LinuxRCOutput_Navio rcoutDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
-//static LinuxRCOutput_IMX6 rcoutDriver;
-static Empty::EmptyRCOutput rcoutDriver;
+static LinuxRCOutput_PCA9685 rcoutDriver;
+//static Empty::EmptyRCOutput rcoutDriver;
 #else
 static Empty::EmptyRCOutput rcoutDriver;
 #endif

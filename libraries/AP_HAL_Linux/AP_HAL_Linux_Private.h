@@ -16,6 +16,7 @@
 #include "RCInput_Navio.h"
 #include "RCOutput_PRU.h"
 #include "RCOutput_Navio.h"
+#include "RCOutput_PCA9685.h"
 #include "Semaphores.h"
 #include "Scheduler.h"
 #include "Util.h"
