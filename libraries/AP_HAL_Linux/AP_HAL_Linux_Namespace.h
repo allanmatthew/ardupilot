@@ -24,13 +24,18 @@ namespace Linux {
     class LinuxRCInput;
     class LinuxRCInput_PRU;
     class LinuxRCInput_Navio;
+    class LinuxRCOutput_PRU;
+    class LinuxRCOutput_Navio;
     class LinuxRCInput_UDP;
+    class LinuxRCInput_ZYNQ;
     class LinuxRCOutput_PRU;
     class LinuxRCOutput_Navio;
     class LinuxRCOutput_PCA9685;
+    class LinuxRCOutput_ZYNQ;
     class LinuxSemaphore;
     class LinuxScheduler;
     class LinuxUtil;
+	class ToneAlarm;					//limit the scope of ToneAlarm driver to Linux_HAL only
 }
 
 #endif // __AP_HAL_LINUX_NAMESPACE_H__

@@ -62,7 +62,8 @@ static LinuxRCInput_PRU rcinDriver;
 static LinuxRCInput_Navio rcinDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
 static LinuxRCInput_UDP rcinDriver;
-//static LinuxRCInput rcinDriver;
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ZYNQ
+static LinuxRCInput_ZYNQ rcinDriver;
 #else
 static LinuxRCInput rcinDriver;
 #endif
@@ -79,7 +80,8 @@ static LinuxRCOutput_PRU rcoutDriver;
 static LinuxRCOutput_Navio rcoutDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
 static LinuxRCOutput_PCA9685 rcoutDriver;
-//static Empty::EmptyRCOutput rcoutDriver;
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ZYNQ
+static LinuxRCOutput_ZYNQ rcoutDriver;
 #else
 static Empty::EmptyRCOutput rcoutDriver;
 #endif

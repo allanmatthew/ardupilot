@@ -159,6 +159,10 @@ uint32_t LinuxScheduler::micros()
 
 void LinuxScheduler::delay_microseconds(uint16_t us)
 {
+    if (stopped_clock_usec) {
+        stopped_clock_usec += us;
+        return;
+    }
     _microsleep(us);
 }
 
@@ -329,7 +333,7 @@ void *LinuxScheduler::_tonealarm_thread(void)
         poll(NULL, 0, 1);        
     }
     while (true) {
-        _microsleep(20000);
+        _microsleep(10000);
 
         // process tone command
         ((LinuxUtil *)hal.util)->_toneAlarm_timer_tick();
@@ -388,7 +392,7 @@ void LinuxScheduler::system_initialized()
 
 void LinuxScheduler::reboot(bool hold_in_bootloader) 
 {
-    for(;;);
+    exit(1);
 }
 
 void LinuxScheduler::stop_clock(uint64_t time_usec)
