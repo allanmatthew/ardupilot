@@ -63,6 +63,11 @@ void LinuxRCOutput_PCA9685::set_freq(uint32_t chmask, uint16_t freq_hz)
     newmode = (oldmode&0x7F) | 0x10; // sleep
     hal.i2c->writeRegister(PCA9685_ADDRESS, PCA9685_MODE1, newmode); // go to sleep
     hal.i2c->writeRegister(PCA9685_ADDRESS, PCA9685_PRESCALE, prescale);
+
+    // Reset all channels
+    uint8_t data[4] = {0x00, 0x00, 0x00, 0x00};
+    hal.i2c->writeRegisters(PCA9685_ADDRESS, PCA9685_ALL_LED_ON_L, 4, data);
+
     hal.i2c->writeRegister(PCA9685_ADDRESS, PCA9685_MODE1, oldmode);
     hal.scheduler->delay(5);
     hal.i2c->writeRegister(PCA9685_ADDRESS, PCA9685_MODE1, oldmode|0xa1);//Auto increment
@@ -104,10 +109,10 @@ void LinuxRCOutput_PCA9685::write(uint8_t ch, uint16_t period_us)
     else
         length = round((period_us * 4096) / (1000000.f / _frequency)) - 1;
         
-    uint8_t data[4] = {0x00, 0x00, (uint8_t)(length & 0xFF), (uint8_t)(length >> 8)};
+    uint8_t data[2] = {(uint8_t)(length & 0xFF), (uint8_t)(length >> 8)};
     hal.i2c->writeRegisters(PCA9685_ADDRESS, 
-                            PCA9685_LED0_ON_L + 4 * ch, 
-                            4, 
+                            PCA9685_LED0_OFF_L + 4 * ch, 
+                            2, 
                             data);
                                              
     _i2c_sem->give();                                         
