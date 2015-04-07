@@ -134,9 +134,23 @@ private:
 	uint16_t duration;
 	int32_t prev_tune_num;
 	uint32_t prev_time;
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+	int mem_fd;
+        volatile uint32_t *pwm1_iomux;
+        struct PWM_mapping {
+            volatile uint32_t *base;
+            volatile uint32_t *CR;
+            volatile uint32_t *SR;
+            volatile uint32_t *IR;
+            volatile uint32_t *SAR;
+            volatile uint32_t *PR;
+            volatile uint32_t *CNR;
+        } pwm_map;
+#else
 	int32_t period_fd;
 	int32_t duty_fd;
 	int32_t run_fd;
+#endif
 	int8_t tune_num;
 	uint8_t tune_pos;
 };

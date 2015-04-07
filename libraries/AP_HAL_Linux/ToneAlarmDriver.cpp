@@ -10,6 +10,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <iostream>
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+#include <sys/mman.h>
+#endif
 
 using namespace Linux;
 
@@ -39,9 +42,13 @@ bool ToneAlarm::tune_repeat[TONE_NUMBER_OF_TUNES] = {false,true,false,false,fals
 
 ToneAlarm::ToneAlarm()
 {
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+    mem_fd = open("/dev/mem", O_RDWR|O_SYNC);
+#else
     period_fd = open("/sys/devices/ocp.3/pwm_test_P8_36.12/period",O_WRONLY);
     duty_fd = open("/sys/devices/ocp.3/pwm_test_P8_36.12/duty",O_WRONLY);
     run_fd = open("/sys/devices/ocp.3/pwm_test_P8_36.12/run",O_WRONLY);
+#endif
     
     tune_num = -1;                    //initialy no tune to play
     tune_pos = 0;
@@ -50,10 +57,45 @@ ToneAlarm::ToneAlarm()
 bool ToneAlarm::init()
 {
     tune_num = 0;                    //play startup tune
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+    if(mem_fd < 0) {
+        hal.console->printf("ToneAlarm: Error!! unable to open /dev/mem\n");
+        return false;
+    }
+
+    //Set up the PWM pin for output (20E_02F0h, SD1_DAT3)
+/*
+    pwm1_iomux = (volatile unsigned *)mmap(0, 4, PROT_READ|PROT_WRITE, MAP_SHARED, mem_fd, 0x20E02F0);
+    if((char*)pwm1_iomux == MAP_FAILED) {
+        hal.console->printf("ToneAlarm: Error!! Unable to map pwm1_iomux\n");
+        return false;
+    }
+    else {
+        hal.console->printf("ToneAlarm: pwmMux current value: %i\n", *pwm1_iomux);
+        *pwm1_iomux = 0x00000003;
+        munmap((void*)pwm1_iomux, 4);
+    }
+*/
+    //Map the PWM registers to memory
+    pwm_map.base = (volatile unsigned *)mmap(0, 4, PROT_READ|PROT_WRITE, MAP_SHARED, mem_fd, 0x2080000);
+    
+    if((char*)pwm_map.base == MAP_FAILED) {
+           hal.console->printf("ToneAlarm: Error! Unable to mmap PWM registers\n");
+           return false;
+     } 
+  
+    pwm_map.CR = pwm_map.base;
+    pwm_map.SR = pwm_map.base + 4;
+    pwm_map.IR = pwm_map.base + 8;
+    pwm_map.SAR = pwm_map.base + 12;
+    pwm_map.PR = pwm_map.base + 16;
+    pwm_map.CNR = pwm_map.base + 20;
+#else
     if((period_fd == -1) || (duty_fd == -1) || (run_fd == -1)){
         hal.console->printf("ToneAlarm: Error!! please check if PWM overlays are loaded correctly");
         return false;
     }
+#endif
     return true;
 }
 
@@ -69,7 +111,10 @@ bool ToneAlarm::is_tune_comp()
 
 void ToneAlarm::stop()
 {
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+#else
     dprintf(run_fd,"0");
+#endif
 }
 
 bool ToneAlarm::play()
@@ -80,10 +125,15 @@ bool ToneAlarm::play()
         return true;
     }
     if(cur_note != 0){
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_IMX6
+        pwm_map.CR |= 0xFFFFFFFE; //Clear the 0 bit, disabling PWM
+
+#else
         dprintf(run_fd,"0");
         dprintf(period_fd,"%u",1000000000/cur_note);    
         dprintf(duty_fd,"%u",500000000/cur_note);
         dprintf(run_fd,"1");
+#endif
         cur_note =0;
         prev_time = cur_time;
     }
